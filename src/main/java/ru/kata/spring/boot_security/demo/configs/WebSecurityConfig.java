@@ -29,19 +29,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()  // Доступ к главной странице для всех
+                .antMatchers("/", "/registration").permitAll()
                 .antMatchers("/user/**").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")  // Указание пользовательской страницы входа, если нужна
+                .loginPage("/login")
                 .successHandler(successUserHandler)
                 .permitAll()
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")  // После выхода перенаправление на главную
+                .logoutSuccessUrl("/")
                 .permitAll();
     }
 
