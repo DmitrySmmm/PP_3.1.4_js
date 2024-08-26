@@ -16,7 +16,7 @@
     <label for="phoneNumber">Phone Number:</label>
     <input type="number" id="phoneNumber" th:field="*{phoneNumber}" required/><br/>
 
-    <label>Roles:</label>
+    <label>Make admin:</label>
     <div th:each="role : ${roles}">
         <input type="checkbox" th:field="*{roles}" th:value="${role.id}"/>
         <label th:text="${role.name}"></label><br/>
