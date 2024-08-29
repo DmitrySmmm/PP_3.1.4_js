@@ -1,28 +1,30 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/")
 public class UserController {
 
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userServiceImpl;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
+
 
     public UserController(UserServiceImpl userServiceImpl, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userServiceImpl = userServiceImpl;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/")
@@ -40,15 +42,20 @@ public class UserController {
 
     @GetMapping("/registration")
     public String showRegistrationForm(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            return "redirect:/user";
+        }
         model.addAttribute("user", new User());
         model.addAttribute("roles", roleService.findAll());
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String registerUser(@ModelAttribute("user") User user, @RequestParam List<Long> roleIds) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userServiceImpl.save(user, roleIds);
+    public String registerUser(@ModelAttribute("user") User user, @RequestParam Long roleId) {
+        List<Long> list = new ArrayList<>();
+        list.add(roleId);
+        userServiceImpl.save(user, list);
         return "redirect:/login";
     }
 }

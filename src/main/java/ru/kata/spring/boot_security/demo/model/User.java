@@ -1,8 +1,6 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,10 +34,11 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles;
 
-    public User(String username, String password, long phoneNumber) {
+    public User(String username, String password, long phoneNumber, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.roles = roles;
     }
 
     @Override

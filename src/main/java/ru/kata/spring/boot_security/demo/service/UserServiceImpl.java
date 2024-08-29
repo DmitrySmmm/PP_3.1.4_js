@@ -12,11 +12,12 @@ import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -30,22 +31,23 @@ public class UserServiceImpl {
 
     @Transactional
     public void save(User user, List<Long> roles) {
-        User newUser = user;
-        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         List<Role> userRoles = roleRepository.findAllById(roles);
-        newUser.setRoles(new HashSet<>(userRoles));
-        userRepository.save(newUser);
+        user.setRoles(new HashSet<>(userRoles));
+        userRepository.save(user);
     }
 
     @Transactional
     public void update(User user, Long id, List<Long> roles) {
-        User updUser = userRepository.getById(id);
-        updUser.setUsername(user.getUsername());
-        updUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        updUser.setPhoneNumber(user.getPhoneNumber());
-        List<Role> updRoles = roleRepository.findAllById(roles);
-        updUser.setRoles(new HashSet<>(updRoles));
-        userRepository.save(updUser);
+        User updUser = userRepository.findById(id);
+        if (updUser != null) {
+            updUser.setUsername(user.getUsername());
+            updUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            updUser.setPhoneNumber(user.getPhoneNumber());
+            List<Role> updRoles = roleRepository.findAllById(roles);
+            updUser.setRoles(new HashSet<>(updRoles));
+            userRepository.update(updUser);
+        }
     }
 
     @Transactional
@@ -54,11 +56,14 @@ public class UserServiceImpl {
     }
 
     public User findById(Long id) {
-        return userRepository.getById(id);
+        return userRepository.findById(id);
     }
 
     public Optional<User> findByUsername(String username) {
-        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username));
-        return user;
+        return userRepository.findByUsername(username);
+    }
+
+    public long count() {
+        return userRepository.count();
     }
 }
