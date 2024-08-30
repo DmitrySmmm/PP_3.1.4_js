@@ -18,12 +18,12 @@ import java.util.List;
 @RequestMapping("/")
 public class UserController {
 
-    private final UserService userServiceImpl;
+    private final UserService userService;
     private final RoleService roleService;
 
 
-    public UserController(UserServiceImpl userServiceImpl, RoleService roleService, PasswordEncoder passwordEncoder) {
-        this.userServiceImpl = userServiceImpl;
+    public UserController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
         this.roleService = roleService;
     }
 
@@ -35,7 +35,7 @@ public class UserController {
 
     @GetMapping("/user")
     public String showUser(Model model, Authentication authentication) {
-        User user = userServiceImpl.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userService.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("User not found"));
         model.addAttribute("user", user);
         return "user-info";
     }
@@ -55,7 +55,7 @@ public class UserController {
     public String registerUser(@ModelAttribute("user") User user, @RequestParam Long roleId) {
         List<Long> list = new ArrayList<>();
         list.add(roleId);
-        userServiceImpl.save(user, list);
+        userService.save(user, list);
         return "redirect:/login";
     }
 }

@@ -16,24 +16,24 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final UserService userServiceImpl;
+    private final UserService userService;
     private final RoleService roleService;
 
-    public AdminController(UserServiceImpl userServiceImpl, RoleService roleService) {
-        this.userServiceImpl = userServiceImpl;
+    public AdminController(UserService userService, RoleService roleService) {
+        this.userService = userService;
         this.roleService = roleService;
     }
 
     @GetMapping
     public String showAllUsers(Model model) {
-        List<User> users = userServiceImpl.showAll();
+        List<User> users = userService.showAll();
         model.addAttribute("users", users);
         return "admin";
     }
 
     @GetMapping("/edit/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
-        User user = userServiceImpl.findById(id);
+        User user = userService.findById(id);
         List<Role> roles = roleService.findAll();
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
@@ -42,13 +42,13 @@ public class AdminController {
 
     @PostMapping("/edit/{id}")
     public String updateUser(@ModelAttribute("user") User user, @RequestParam List<Long> roles, @PathVariable("id") Long id) {
-        userServiceImpl.update(user, id, roles);
+        userService.update(user, id, roles);
         return "redirect:/admin";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
-        userServiceImpl.delete(id);
+        userService.delete(id);
         return "redirect:/admin";
     }
 }

@@ -8,38 +8,50 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
+    private final UserService userService;
 
-    public DataInitializer(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    public DataInitializer(RoleService roleService, UserService userService) {
+        this.roleService = roleService;
+        this.userService = userService;
     }
+
 
     @Transactional
     @Override
     public void run(String... args) throws Exception {
-        if (roleRepository.count() == 0) {
-            roleRepository.save(new Role("ROLE_USER"));
-            roleRepository.save(new Role("ROLE_ADMIN"));
-            if (userRepository.count() == 0) {
-                Set<Role> roles = new HashSet<>(roleRepository.findAll());
+        try {
+            if (roleService.count() == 0) {
+                System.out.println("Creating roles...");
+                roleService.save(new Role("ROLE_USER"));
+                roleService.save(new Role("ROLE_ADMIN"));
+            }
+
+            if (userService.count() == 0) {
+                System.out.println("Creating admin user...");
+                Set<Role> roles = new HashSet<>(roleService.findAll());
                 User admin = new User();
                 admin.setUsername("admin");
-                admin.setPassword(passwordEncoder.encode("admin"));
+                admin.setPassword("admin"); // Зашифруйте пароль
                 admin.setPhoneNumber(9991112233L);
                 admin.setRoles(roles);
-                userRepository.save(admin);
+                List<Long> roleIds = roleService.findAll().stream().map(Role::getId).collect(Collectors.toList());
+                userService.save(admin, roleIds);
             }
+        } catch (Exception e) {
+            e.printStackTrace(); // Печать полного стека ошибки
         }
     }
+
 }
