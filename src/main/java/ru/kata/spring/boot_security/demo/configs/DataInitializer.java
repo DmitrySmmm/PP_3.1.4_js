@@ -43,14 +43,14 @@ public class DataInitializer implements CommandLineRunner {
                 Set<Role> roles = new HashSet<>(roleService.findAll());
                 User admin = new User();
                 admin.setUsername("admin");
-                admin.setPassword("admin"); // Зашифруйте пароль
+                admin.setPassword("admin");
                 admin.setPhoneNumber(9991112233L);
                 admin.setRoles(roles);
                 List<Long> roleIds = roleService.findAll().stream().map(Role::getId).collect(Collectors.toList());
                 userService.save(admin, roleIds);
             }
         } catch (Exception e) {
-            e.printStackTrace(); // Печать полного стека ошибки
+            e.printStackTrace();
         }
     }
 
