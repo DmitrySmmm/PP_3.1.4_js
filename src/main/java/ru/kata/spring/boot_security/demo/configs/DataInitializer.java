@@ -28,7 +28,6 @@ public class DataInitializer implements CommandLineRunner {
     }
 
 
-    @Transactional
     @Override
     public void run(String... args) throws Exception {
         try {
