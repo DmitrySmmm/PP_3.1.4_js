@@ -16,17 +16,17 @@ public class UserRepositoryImpl implements UserRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Transactional
+
     public User findById(Long id) {
         return entityManager.find(User.class, id);
     }
 
-    @Transactional
+
     public List<User> findAll() {
         return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
-    @Transactional
+
     public Optional<User> findByUsername(String username) {
         List<User> users = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
                 .setParameter("username", username)
@@ -34,17 +34,17 @@ public class UserRepositoryImpl implements UserRepository {
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
 
-    @Transactional
+
     public void save(User user) {
         entityManager.persist(user);
     }
 
-    @Transactional
+
     public void update(User user) {
         entityManager.merge(user);
     }
 
-    @Transactional
+
     public void deleteById(Long id) {
         User user = findById(id);
         if (user != null) {
@@ -52,7 +52,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    @Transactional
+
     public long count() {
         return entityManager.createQuery("SELECT COUNT(u) FROM User u", Long.class).getSingleResult();
     }

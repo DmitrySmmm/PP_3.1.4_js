@@ -52,9 +52,9 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public String registerUser(@ModelAttribute("user") User user, @RequestParam Long roleId) {
+    public String registerUser(@ModelAttribute("user") User user) {
         List<Long> list = new ArrayList<>();
-        list.add(roleId);
+        list.add(1L);
         userService.save(user, list);
         return "redirect:/login";
     }

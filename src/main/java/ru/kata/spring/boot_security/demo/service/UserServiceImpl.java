@@ -44,17 +44,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional
-    public void update(User user, Long id, List<Long> roles) {
-        User updUser = userRepository.findById(id);
-        if (updUser != null) {
-            updUser.setUsername(user.getUsername());
-            updUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            updUser.setPhoneNumber(user.getPhoneNumber());
-            List<Role> updRoles = roleRepository.findAllById(roles);
-            updUser.setRoles(new HashSet<>(updRoles));
-            userRepository.update(updUser);
+    public void update(User user, List<Long> roles) {
+        User existingUser = userRepository.findById(user.getId());
+
+        if (existingUser != null) {
+            // Если пользователь изменил пароль (он не совпадает с хешем)
+            if (!user.getPassword().equals(existingUser.getPassword())) {
+                // Хешируем новый пароль
+                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            } else {
+                // Если пароль не изменен, оставляем текущий хэш
+                existingUser.setPassword(existingUser.getPassword());
+            }
+
+            // Обновляем остальные данные пользователя
+            existingUser.setUsername(user.getUsername());
+            existingUser.setPhoneNumber(user.getPhoneNumber());
+
+            // Обновляем роли
+            List<Role> updatedRoles = roleRepository.findAllById(roles);
+            existingUser.setRoles(new HashSet<>(updatedRoles));
+
+            // Сохраняем изменения в базе данных
+            userRepository.update(existingUser);
         }
     }
+
+//    @Transactional
+//    public void update(User user, List<Long> roles) {
+//        if (user != null) {
+//            user.setUsername(user.getUsername());
+//            user.setPassword(passwordEncoder.encode(user.getPassword()));
+//            user.setPhoneNumber(user.getPhoneNumber());
+//            List<Role> updRoles = roleRepository.findAllById(roles);
+//            user.setRoles(new HashSet<>(updRoles));
+//            userRepository.update(user);
+//        }
+//    }
 
     @Transactional
     public void delete(long id) {

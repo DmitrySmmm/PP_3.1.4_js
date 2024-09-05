@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    public List<User> showAll();
+    List<User> showAll();
 
-    public void save(User user, List<Long> roles);
+    void save(User user, List<Long> roles);
 
-    public void update(User user, Long id, List<Long> roles);
+    void update(User user, List<Long> roles);
 
-    public void delete(long id);
+    void delete(long id);
 
-    public User findById(Long id);
+    User findById(Long id);
 
-    public Optional<User> findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
-    public long count();
+    long count();
 }
