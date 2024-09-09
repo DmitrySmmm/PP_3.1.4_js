@@ -16,16 +16,25 @@ public class RoleServiceImpl implements  RoleService {
         this.roleRepository = roleRepository;
     }
 
+    @Override
     @Transactional
     public List<Role> findAll() {
         return roleRepository.findAll();
     }
 
+    @Override
+    @Transactional
+    public List<Role> findAllById(List<Long> ids) {
+        return roleRepository.findAllById(ids);
+    }
+
+    @Override
     @Transactional
     public void save(Role role) {
         roleRepository.save(role);
     }
 
+    @Override
     public long count() {
         return roleRepository.count();
     }

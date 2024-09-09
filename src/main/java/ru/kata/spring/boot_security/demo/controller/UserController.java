@@ -2,7 +2,6 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,9 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/")
@@ -21,7 +22,7 @@ public class UserController {
     private final RoleService roleService;
 
 
-    public UserController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
@@ -46,7 +47,6 @@ public class UserController {
             return "redirect:/user";
         }
         model.addAttribute("user", new User());
-        model.addAttribute("roles", roleService.findAll());
         return "registration";
     }
 
@@ -54,7 +54,8 @@ public class UserController {
     public String registerUser(@ModelAttribute("user") User user) {
         List<Long> list = new ArrayList<>();
         list.add(1L);
-        userService.save(user, list);
+        user.setRoles(new HashSet<>(roleService.findAllById(list)));
+        userService.save(user);
         return "redirect:/login";
     }
 }

@@ -9,6 +9,8 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -43,10 +45,10 @@ public class AdminController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateUser(@PathVariable("id") Long id,
-                             @ModelAttribute("user") User user,
+    public String updateUser(@ModelAttribute("user") User user,
                              @RequestParam("roles") List<Long> roles) {
-        userService.update(user, roles);
+        user.setRoles(new HashSet<>(roleService.findAllById(roles)));
+        userService.update(user);
         return "redirect:/admin";
     }
 

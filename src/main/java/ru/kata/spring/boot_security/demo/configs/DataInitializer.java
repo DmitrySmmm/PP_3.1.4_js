@@ -45,8 +45,7 @@ public class DataInitializer implements CommandLineRunner {
                 admin.setPassword("admin");
                 admin.setPhoneNumber(9991112233L);
                 admin.setRoles(roles);
-                List<Long> roleIds = roleService.findAll().stream().map(Role::getId).collect(Collectors.toList());
-                userService.save(admin, roleIds);
+                userService.save(admin);
             }
         } catch (Exception e) {
             e.printStackTrace();
