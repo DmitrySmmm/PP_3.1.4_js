@@ -17,10 +17,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -53,6 +50,7 @@ public class AdminController {
 
     @PostMapping()
     public ResponseEntity<HttpStatus> saveNewUser(@RequestBody @Valid User user) {
+        System.out.println("Received user: " + user);
         userService.save(user);
         return ResponseEntity.ok(HttpStatus.OK);
     }
@@ -63,8 +61,9 @@ public class AdminController {
     }
 
     @PutMapping()
-    public ResponseEntity<HttpStatus> saveUpdateUser(@RequestBody User user,
+    public ResponseEntity<HttpStatus> updateUser(@RequestBody User user,
                                                      BindingResult bindingResult) {
+        System.out.println("Received user: " + user);
         userService.update(user);
         return ResponseEntity.ok(HttpStatus.OK);
     }

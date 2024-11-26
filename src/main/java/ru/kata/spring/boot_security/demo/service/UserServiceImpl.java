@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,10 +22,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -35,6 +39,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void save(User user) {
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            Role defaultRole = roleService.findById(1L);
+            user.setRoles(Collections.singleton(defaultRole));
+        } else {
+            // Загружаем роли по их ID
+            Set<Role> roles = user.getRoles().stream()
+                    .map(role -> roleService.findById(role.getId()))
+                    .collect(Collectors.toSet());
+            user.setRoles(roles);
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -42,10 +57,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void update(User user) {
-        if (!user.getPassword().equals(userRepository.findById(user.getId()).getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Загружаем пользователя из базы данных
+        User userFromDB = userRepository.findById(user.getId());
+
+        if (userFromDB == null) {
+            throw new EntityNotFoundException("User not found with ID: " + user.getId());
         }
-        userRepository.update(user);
+
+        // Обновляем только измененные поля
+        userFromDB.setPhoneNumber(user.getPhoneNumber());
+        userFromDB.setUsername(user.getUsername());
+
+        // Если есть роли, обновляем их
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            Set<Role> roles = user.getRoles().stream()
+                    .map(role -> roleService.findById(role.getId())) // Загружаем роли из базы
+                    .collect(Collectors.toSet());
+            userFromDB.setRoles(roles); // Устанавливаем новые роли
+        }
+
+        // Если передан новый пароль
+        if (user.getPassword() != null && !user.getPassword().isEmpty() &&
+                !user.getPassword().equals(userRepository.findById(user.getId()).getPassword())) {
+            userFromDB.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        userRepository.update(userFromDB);
     }
 
     @Override

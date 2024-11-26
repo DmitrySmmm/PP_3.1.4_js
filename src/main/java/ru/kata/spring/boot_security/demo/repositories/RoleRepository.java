@@ -11,5 +11,6 @@ public interface RoleRepository {
     void save(Role role);
     void update(Role role);
     void deleteById(Long id);
+    Role findByRoleName(String roleName);
     long count();
 }

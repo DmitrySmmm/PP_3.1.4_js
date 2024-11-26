@@ -41,8 +41,20 @@ public class Role implements GrantedAuthority {
         return Objects.equals(id, role.id);
     }
 
+    public String getRoleNameWithoutRole() {
+        return name.substring(5);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "Id=" + id +
+                ", roleName='" + name + '\'' +
+                '}';
     }
 }

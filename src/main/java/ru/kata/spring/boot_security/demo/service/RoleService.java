@@ -7,9 +7,13 @@ public interface RoleService {
 
     List<Role> findAll();
 
+    Role findById(Long id);
+
     List<Role> findAllById(List<Long> ids);
 
     void save(Role role);
+
+    Role getByName(String name);
 
     long count();
 }

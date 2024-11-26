@@ -1,6 +1,7 @@
 async function createNewUser(user) {
     await fetch("/api/admin",
         {method: 'POST',headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)})
+    console.log(JSON.stringify(user) + "hello");
 }
 
 async function addNewUserForm() {
@@ -17,11 +18,12 @@ async function addNewUserForm() {
 
         let roles = [];
         for (let option of rolesSelected.selectedOptions) {
-            if(option.value === ROLE_USER.roleName) {
-                roles.push(ROLE_USER);
-            } else if (option.value === ROLE_ADMIN.roleName) {
-                roles.push(ROLE_ADMIN);
-            }
+            roles.push({ id: option.value });
+            //   if(option.value === ROLE_USER.name) {
+            //      roles.push(ROLE_USER);
+            // } else if (option.value === ROLE_ADMIN.name) {
+            //      roles.push(ROLE_ADMIN);
+            // }
         }
 
         const newUserData = {

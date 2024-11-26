@@ -1,6 +1,7 @@
 async function sendDataEditUser(user) {
     await fetch("/api/admin" ,
         {method:"PUT", headers: {'Content-type': 'application/json'}, body: JSON.stringify(user)} )
+    console.log(JSON.stringify(user) + "hello");
 }
 
 const modalEdit = document.getElementById("editModal");
@@ -16,11 +17,12 @@ modalEdit.addEventListener("submit", async function(event){
 
     let roles = [];
     for (let option of rolesSelected.selectedOptions) {
-        if(option.value === ROLE_USER.roleName) {
-            roles.push(ROLE_USER);
-        } else if (option.value === ROLE_ADMIN.roleName) {
-            roles.push(ROLE_ADMIN);
-        }
+        roles.push({ id: option.value }); // Передаем id роли
+        // if(option.value === ROLE_USER.name) {
+        //     roles.push(ROLE_USER);
+        // } else if (option.value === ROLE_ADMIN.name) {
+        //     roles.push(ROLE_ADMIN);
+        // }
     }
 
     let user = {

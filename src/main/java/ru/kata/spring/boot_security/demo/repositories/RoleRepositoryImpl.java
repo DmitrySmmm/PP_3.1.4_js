@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.repositories;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.Role;
 
@@ -12,6 +14,8 @@ import java.util.List;
 public class RoleRepositoryImpl implements RoleRepository {
     @PersistenceContext
     private EntityManager entityManager;
+
+    private static final Logger logger = LoggerFactory.getLogger(RoleRepositoryImpl.class);
 
     @Override
     public Role findById(Long id) {
@@ -46,6 +50,16 @@ public class RoleRepositoryImpl implements RoleRepository {
         if (role != null) {
             entityManager.remove(role);
         }
+    }
+
+    @Override
+    public Role findByRoleName(String roleName) {
+        logger.debug("Searching for role with name: {}", roleName);
+        Role role = entityManager.createQuery("SELECT r from Role r WHERE r.name IN :roleName", Role.class)
+                .setParameter("roleName", roleName)
+                .getSingleResult();
+        logger.debug("Found role: {}", role);
+        return role;
     }
 
     @Override

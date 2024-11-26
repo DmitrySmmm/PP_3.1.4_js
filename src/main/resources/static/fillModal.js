@@ -40,8 +40,8 @@ async function fillModal(modal) {
         } else if (rolesSelectEdit !== null) {
             rolesSelect = rolesSelectEdit;
             userRolesHTML +=
-                `<option value="ROLE_USER">USER</option>
-                 <option value="ROLE_ADMIN">ADMIN</option>`
+                `<option value="1">USER</option>
+                 <option value="2">ADMIN</option>`
         }
 
         rolesSelect.innerHTML = userRolesHTML;

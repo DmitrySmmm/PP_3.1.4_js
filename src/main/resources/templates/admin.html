@@ -105,20 +105,17 @@
                                         <form id="newUser">
                                             <label for="username" class="form-label fw-bold mb-0">Username</label>
                                             <input type="text" class="form-control" id="username" placeholder="Username">
-                                            <span id="nameError" class="text-danger"></span>
                                             <br>
                                             <label for="phoneNumber" class="form-label fw-bold mb-0">Phonenumber</label>
-                                            <input type="text" class="form-control" id="phoneNumber" placeholder="Phonenumber">
-                                            <span id="emailError" class="text-danger"></span>
+                                            <input type="number" class="form-control" id="phoneNumber" placeholder="Phonenumber">
                                             <br>
                                             <label for="password" class="form-label fw-bold mb-0">Password</label>
                                             <input type="text" class="form-control" id="password" placeholder="Password">
-                                            <span id="passwordError" class="text-danger"></span>
                                             <br>
                                             <label for="roles" class="form-label fw-bold mb-0">Role</label>
-                                            <select class="form-select" id="roles" size="2" multiple="multiple" name="rolesForController">
-                                                <option value="ROLE_USER">USER</option>
-                                                <option value="ROLE_ADMIN">ADMIN</option>
+                                            <select class="form-select" id="roles" size="2" multiple="multiple" name="Roles">
+                                                <option value="1">USER</option>
+                                                <option value="2">ADMIN</option>
                                             </select>
                                             <br>
                                             <div>
@@ -220,10 +217,10 @@
                         <label for="idEdit" class="form-label fw-bold mb-0">ID</label>
                         <input type="text" class="form-control" id="idEdit" data-user-id="id" readonly>
                         <br>
-                        <label for="usernameEdit" class="form-label fw-bold mb-0">First name</label>
+                        <label for="usernameEdit" class="form-label fw-bold mb-0">Username</label>
                         <input type="text"  class="form-control" id="usernameEdit" data-user-id="username">
                         <br>
-                        <label for="phoneNumberEdit" class="form-label fw-bold mb-0">Email</label>
+                        <label for="phoneNumberEdit" class="form-label fw-bold mb-0">Phonenumber</label>
                         <input type="text"  class="form-control" id="phoneNumberEdit" data-user-id="phoneNumber">
                         <br>
                         <label for="passwordEdit" class="form-label fw-bold mb-0">Password</label>
